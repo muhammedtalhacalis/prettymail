@@ -7,8 +7,10 @@
      Boş bırakılan her alan sitede "Yakında" olarak görünür.
      ───────────────────────────────────────────────────────────────────── */
   var AYARLAR = {
-    indirmeBaglantisi: '',  // ör. 'https://github.com/…/releases/latest/download/PrettyMail-Kurulum.exe'
-    surum: '',              // ör. '0.1.0' — indirme düğmesinin altında gösterilir
+    // “latest” bağlantıları her zaman son yayımlanan sürümü indirir; yeni sürümde yalnızca “surum” güncellenir.
+    indirmeBaglantisi: 'https://github.com/muhammedtalhacalis/prettymail/releases/latest/download/PrettyMail-Kurulum.exe',
+    tasinabilirBaglantisi: 'https://github.com/muhammedtalhacalis/prettymail/releases/latest/download/PrettyMail-Tasinabilir.exe', // kurmadan çalışan sürüm
+    surum: '0.1.4',         // indirme düğmesinin altında gösterilir
     iletisimEpostasi: '',   // ör. 'merhaba@alanadiniz.com'
     githubAdresi: ''        // ör. 'https://github.com/kullanici/prettymail'
   };
@@ -96,7 +98,9 @@
     });
     all('[data-yakinda]').forEach(function (el) { el.hidden = true; });
     all('[data-hazir]').forEach(function (el) { el.hidden = false; });
-    if (AYARLAR.surum) all('[data-surum]').forEach(function (el) { el.textContent = 'Sürüm ' + AYARLAR.surum; el.hidden = false; });
+    if (AYARLAR.surum) all('[data-surum]').forEach(function (el) { el.textContent = 'Sürüm ' + AYARLAR.surum + ' · Windows 10 / 11 (64 bit) · yaklaşık 110 MB'; el.hidden = false; });
+    var tasinabilir = guvenliAdres(AYARLAR.tasinabilirBaglantisi);
+    all('[data-tasinabilir]').forEach(function (a) { if (tasinabilir) a.setAttribute('href', tasinabilir); else a.removeAttribute('href'); });
   }
 
   var eposta = String(AYARLAR.iletisimEpostasi || '').trim();
