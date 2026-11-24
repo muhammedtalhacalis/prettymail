@@ -1,0 +1,685 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PrettyMail — Aynı e-posta, sohbet rahatlığında</title>
+  <meta name="description" content="PrettyMail kurumsal e-postanızı kişi kişi sohbetlere çevirir: hitap, imza ve iç içe alıntılar gizlenir, balonda yalnızca asıl mesaj kalır. Karşı taraf normal e-posta alır. Parola kaydedilmez, aracı sunucu yoktur.">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#F2F0EA" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0F0E15" media="(prefers-color-scheme: dark)">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="PrettyMail — Aynı e-posta, sohbet rahatlığında">
+  <meta property="og:description" content="Kurumsal e-postanız, sohbet arayüzünde. Karşı taraf normal e-posta alır; parola kaydedilmez, aracı sunucu yoktur.">
+  <meta property="og:locale" content="tr_TR">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <script>
+    /* Tema, sayfa çizilmeden önce belirlenir (yanıp sönme olmasın). */
+    (function () {
+      var d = document.documentElement, t = null;
+      try { t = localStorage.getItem('pm-site-tema'); } catch (e) {}
+      if (t !== 'dark' && t !== 'light') t = window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      d.setAttribute('data-theme', t);
+      d.classList.add('js');
+    })();
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@1&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- Simge takımı (uygulamadaki çizgi simgelerle aynı dil) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <symbol id="i-logo" viewBox="0 0 24 24"><path d="M4 5h16a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1h-9l-5 4v-4H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Z"/><path d="m4.5 7 7.5 5 7.5-5"/></symbol>
+    <symbol id="i-chat" viewBox="0 0 24 24"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></symbol>
+    <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></symbol>
+    <symbol id="i-checkc" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></symbol>
+    <symbol id="i-clip" viewBox="0 0 24 24"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"/></symbol>
+    <symbol id="i-mail" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol>
+    <symbol id="i-flag" viewBox="0 0 24 24"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><path d="M4 22v-7"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></symbol>
+    <symbol id="i-right" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></symbol>
+    <symbol id="i-down" viewBox="0 0 24 24"><path d="M12 5v14M19 12l-7 7-7-7"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></symbol>
+    <symbol id="i-server" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><path d="M6 6h.01M6 18h.01"/></symbol>
+    <symbol id="i-monitor" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></symbol>
+    <symbol id="i-key" viewBox="0 0 24 24"><circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 2-9.6 9.6M15.5 7.5l3 3L22 7l-3-3"/></symbol>
+    <symbol id="i-undo" viewBox="0 0 24 24"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"/></symbol>
+    <symbol id="i-megaphone" viewBox="0 0 24 24"><path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></symbol>
+    <symbol id="i-layers" viewBox="0 0 24 24"><path d="m12 2 10 5-10 5L2 7l10-5Z"/><path d="m2 17 10 5 10-5M2 12l10 5 10-5"/></symbol>
+    <symbol id="i-database" viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5M3 12a9 3 0 0 0 18 0"/></symbol>
+    <symbol id="i-badge" viewBox="0 0 24 24"><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/><path d="m9 12 2 2 4-4"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-send" viewBox="0 0 24 24"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+    <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></symbol>
+    <symbol id="i-type" viewBox="0 0 24 24"><path d="M4 7V4h16v3M9 20h6M12 4v16"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></symbol>
+  </defs>
+</svg>
+
+<a class="skip" href="#icerik">İçeriğe geç</a>
+
+<header class="top" id="ust">
+  <div class="wrap top-in">
+    <a class="brand" href="#ust" aria-label="PrettyMail — sayfanın başı">
+      <span class="logo" aria-hidden="true"><svg class="ic"><use href="#i-logo"/></svg></span>
+      <span class="brand-name">PrettyMail</span>
+    </a>
+    <nav class="nav" aria-label="Sayfa bölümleri">
+      <a href="#nasil">Nasıl çalışır</a>
+      <a href="#gizlilik">Gizlilik</a>
+      <a href="#ozellikler">Özellikler</a>
+      <a href="#uyumluluk">Uyumluluk</a>
+      <a href="#sss">Sorular</a>
+    </nav>
+    <div class="top-act">
+      <button class="icon-btn" id="tema" type="button" aria-label="Temayı değiştir" title="Açık / koyu tema">
+        <svg class="ic moon" aria-hidden="true"><use href="#i-moon"/></svg>
+        <svg class="ic sun" aria-hidden="true"><use href="#i-sun"/></svg>
+      </button>
+      <a class="btn btn-sm btn-pri" href="#indir">İndir <span class="pill-soon" data-yakinda>Yakında</span></a>
+    </div>
+  </div>
+</header>
+
+<main id="icerik">
+
+  <!-- ═════════ Kahraman ═════════ -->
+  <section class="hero">
+    <div class="hero-bg" aria-hidden="true"></div>
+    <div class="wrap hero-in">
+      <p class="status"><i aria-hidden="true"></i>Windows masaüstü uygulaması · hazırlanıyor</p>
+      <h1>Aynı e-posta, <span class="serif">sohbet rahatlığında.</span></h1>
+      <p class="lead">PrettyMail kurumsal e-postanızı kişi kişi sohbetlere çevirir. Hitaplar, imzalar ve iç içe alıntılar gizlenir; balonda yalnızca asıl mesaj kalır. Karşı taraf ise her zamanki gibi düzgün bir e-posta alır.</p>
+      <div class="cta-row">
+        <a class="btn btn-lg btn-pri" href="#nasil">Nasıl çalıştığını görün <svg class="ic" aria-hidden="true"><use href="#i-down"/></svg></a>
+        <a class="btn btn-lg btn-line" data-indir aria-disabled="true"><svg class="ic" aria-hidden="true"><use href="#i-download"/></svg>Windows için indir <span class="pill-soon" data-yakinda>Yakında</span></a>
+      </div>
+      <ul class="trust">
+        <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg>Parola kaydedilmez</li>
+        <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg>Aracı sunucu yok</li>
+        <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg>Alıcının PrettyMail kullanması gerekmez</li>
+      </ul>
+    </div>
+
+    <div class="stage-wrap">
+      <div class="stage" id="sahne" data-view="chat">
+        <div class="stage-tabs" role="group" aria-label="Karşılaştırma görünümü">
+          <button type="button" data-view-btn="mail" aria-pressed="false">Önce: e-posta</button>
+          <button type="button" data-view-btn="chat" aria-pressed="true">Sonra: PrettyMail</button>
+        </div>
+
+        <!-- Önce -->
+        <div class="stage-col stage-mail">
+          <p class="stage-label"><b>Önce</b> E-posta istemcisinde</p>
+          <div class="mailcard" role="img" aria-label="Örnek bir kurumsal e-posta. Konu satırı: RE: RE: YNT: 2027 Bütçe Revizyonu. Hitap, kapanış, imza, yasal uyarı ve iki kat alıntılanmış eski yazışma taralı olarak işaretlenmiş; yalnızca iki cümlelik asıl mesaj vurgulanmış.">
+            <div class="mc-bar"><span class="mc-dots"><i></i><i></i><i></i></span><span class="mc-title">Gelen Kutusu</span></div>
+            <div class="mc-subj">RE: RE: YNT: 2027 Bütçe Revizyonu – Ürün Ekibi</div>
+            <div class="mc-from">
+              <span class="av" style="--c:#0984E3;--s:34px">EY</span>
+              <div class="mc-who"><b>Elif Yıldız</b> &lt;elif.yildiz@novateknoloji.example&gt;<br><span>Kime: Deniz Aksoy · Dün 09:15</span></div>
+            </div>
+            <div class="mc-body">
+              <div class="cut" data-l="Hitap"><p>Merhaba Deniz,</p></div>
+              <div class="keep" data-l="Asıl mesaj">
+                <p>Taahhütlü senaryo mantıklı. Nakit akışı açısından yıllık peşin yerine çeyreklik ödeme isteyelim.</p>
+                <p>Güncel tabloyu <b>çarşamba mesai bitimine kadar</b> alabilir miyim?</p>
+              </div>
+              <div class="cut" data-l="Kapanış ve imza">
+                <p>İyi çalışmalar,</p>
+                <p class="sig"><b>Elif Yıldız</b><br>Finans Direktörü · Nova Teknoloji A.Ş.<br>elif.yildiz@novateknoloji.example</p>
+              </div>
+              <div class="cut" data-l="Yasal uyarı">
+                <p class="disc">Bu e-posta ve ekleri yalnızca gönderildiği kişi veya kuruma özeldir ve gizli bilgi içerebilir. Yanlışlıkla size ulaştıysa lütfen göndereni bilgilendirip mesajı siliniz.</p>
+              </div>
+              <div class="cut" data-l="Alıntılanan eski yazışma">
+                <div class="quoted">
+                  <p class="qh"><b>Kimden:</b> Deniz Aksoy<br><b>Gönderildi:</b> Cumartesi 17:02<br><b>Konu:</b> RE: YNT: 2027 Bütçe Revizyonu – Ürün Ekibi</p>
+                  <p>Merhaba Elif Hanım,</p>
+                  <p>Artışın ana nedeni Atlas’ın yeni müşteri yükü: Ege Lojistik ve Marmara Sigorta canlıya alındığında trafik yaklaşık 2 katına çıkıyor.</p>
+                  <div class="quoted">
+                    <p class="qh"><b>Kimden:</b> Elif Yıldız<br><b>Gönderildi:</b> Cumartesi 16:20<br><b>Konu:</b> YNT: 2027 Bütçe Revizyonu – Ürün Ekibi</p>
+                    <p>Merhaba Deniz,</p>
+                    <p>2027 bütçe taslağında ürün ekibinin kalemlerini inceledim. Bulut altyapı gideri geçen yıla göre %34 artmış görünüyor…</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="stage-link" aria-hidden="true"><svg class="ic"><use href="#i-right"/></svg></div>
+
+        <!-- Sonra -->
+        <div class="stage-col stage-chat">
+          <p class="stage-label"><b>Sonra</b> Aynı yazışma, PrettyMail’de</p>
+          <div class="appwin ui" role="img" aria-label="PrettyMail arayüzü: solda kişi listesi, sağda Elif Yıldız ile sohbet. Aynı yazışma “2027 Bütçe Revizyonu” konusu altında dört kısa balon olarak görünüyor; hitap, imza ve alıntılar yok.">
+            <div class="rail">
+              <span class="logo"><svg class="ic"><use href="#i-logo"/></svg></span>
+              <span class="rb on"><svg class="ic"><use href="#i-chat"/></svg><em>5</em></span>
+              <span class="rb"><svg class="ic"><use href="#i-calendar"/></svg></span>
+              <span class="rb"><svg class="ic"><use href="#i-checkc"/></svg></span>
+              <span class="rail-sp"></span>
+              <span class="rb"><svg class="ic"><use href="#i-moon"/></svg></span>
+              <span class="av" style="--c:#6B5CE7;--s:30px">DA</span>
+            </div>
+            <div class="list">
+              <div class="list-head">
+                <strong>Sohbetler</strong>
+                <div class="search"><svg class="ic"><use href="#i-search"/></svg>Kişi, konu veya mesaj ara</div>
+                <div class="chips"><span class="chip on">Tümü</span><span class="chip">Konular</span><span class="chip">Okunmamış</span></div>
+              </div>
+              <div class="row"><span class="av" style="--c:#00A884">CÖ</span><div class="row-main"><div class="row-top"><b>Can Öztürk</b><time>10:07</time></div><p>Süper, teşekkürler 🙏</p><small>PR #482 – ödeme servisi</small></div></div>
+              <div class="row"><span class="av" style="--c:#2F6FED">AŞ</span><div class="row-main"><div class="row-top"><b>Ayşe Şahin</b><span class="tag ext">Dış</span><time class="new">09:55</time></div><p>Çarşamba 11:00 bizim için uygun. Ekibimden…</p><small>Atlas demo talebi – Marmara Sigorta</small></div><span class="badge">1</span></div>
+              <div class="row on"><span class="av" style="--c:#0984E3">EY</span><div class="row-main"><div class="row-top"><b>Elif Yıldız</b><time>09:22</time></div><p>Siz: Tabii, çarşamba öğleden sonra…</p><small>2027 Bütçe Revizyonu – Ürün Ekibi</small></div></div>
+              <div class="row"><span class="av" style="--c:#B7791F">MD</span><div class="row-main"><div class="row-top"><b>Murat Demir</b><span class="tag ext">Dış</span><time>Dün</time></div><p>Taslağı aldık, hukuk birimimiz inceliyor…</p><small>Atlas Kurumsal – Sözleşme taslağı</small></div><span class="badge">1</span></div>
+              <div class="row"><span class="av" style="--c:#D6336C">ZK</span><div class="row-main"><div class="row-top"><b>Zeynep Kara</b><time>Dün</time></div><p>Yıl sonu performans değerlendirmeleri…</p><small>Yıl sonu değerlendirme dönemi</small></div></div>
+              <div class="row"><span class="av" style="--c:#12A3B4">HY</span><div class="row-main"><div class="row-top"><b>Hakan Yılmaz</b><span class="tag ext">Dış</span><time>Cuma</time></div><p>Siz: Teşekkürler Hakan Bey. Finans…</p><small>3 yıllık taahhüt teklifi</small></div></div>
+            </div>
+            <div class="chat">
+              <div class="chat-head">
+                <span class="av" style="--c:#0984E3;--s:38px">EY</span>
+                <div class="ch-main"><div class="ch-name">Elif Yıldız <span class="tag acc">Exchange</span></div><div class="ch-sub">Finans Direktörü · Nova Teknoloji A.Ş.</div></div>
+              </div>
+              <div class="msgs">
+                <div class="tsep"><span><svg class="ic"><use href="#i-layers"/></svg>2027 Bütçe Revizyonu – Ürün Ekibi</span></div>
+                <div class="sep">Cumartesi</div>
+                <div class="msg in a1"><div class="bubble">2027 bütçe taslağında ürün ekibinin kalemlerini inceledim. Bulut altyapı gideri geçen yıla göre <b>%34</b> artmış görünüyor.
+                  <div class="att"><span class="att-ic">XLS</span><span><b>Butce_2027_Urun_v3.xlsx</b><small>214 KB</small></span></div>
+                  <span class="meta">16:20</span></div></div>
+                <div class="thr">
+                  <div class="msg out a2"><div class="bubble">Artışın ana nedeni Atlas’ın yeni müşteri yükü; trafik yaklaşık 2 katına çıkıyor.<span class="meta">17:02 <svg class="ic"><use href="#i-check"/></svg></span></div></div>
+                  <div class="sep">Dün</div>
+                  <div class="msg in a3"><div class="bubble focus">Taahhütlü senaryo mantıklı. Nakit akışı açısından yıllık peşin yerine çeyreklik ödeme isteyelim.<br><br>Güncel tabloyu <b>çarşamba mesai bitimine kadar</b> alabilir miyim?<span class="meta">09:15</span></div></div>
+                  <div class="msg out a4"><div class="bubble">Tabii, çarşamba öğleden sonra gönderirim.<span class="meta">09:22 <svg class="ic"><use href="#i-check"/></svg></span></div></div>
+                </div>
+              </div>
+              <div class="composer">
+                <div class="ctx"><span class="cx">Konu: <b>2027 Bütçe Revizyonu…</b></span><span class="cx on">Hitap + imza</span><span class="cx hide-s">E-posta önizleme</span></div>
+                <div class="cbox"><svg class="ic"><use href="#i-clip"/></svg><span class="ph">Mesaj yazın…</span><span class="send"><svg class="ic"><use href="#i-send"/></svg></span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="stage-note"><span class="lg lg-keep" aria-hidden="true"></span>Asıl mesaj <span class="lg lg-cut" aria-hidden="true"></span>Sohbette gizlenir, silinmez. Orijinal e-posta her zaman bir tık uzakta. <em>Görseldeki kişiler ve şirketler kurgusaldır.</em></p>
+    </div>
+  </section>
+
+  <!-- ═════════ Sorun ═════════ -->
+  <section class="sec" id="sorun">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <p class="eyebrow">Sorun</p>
+        <h2>Tek cümlelik yanıt, <span class="serif">bir sayfa</span> e-posta.</h2>
+        <p class="sub">İnsanlar anlık mesajlaşmaya alıştı; ama kurumlar arası iletişimin ortak dili hâlâ e-posta. Sorun e-postanın kendisi değil, asıl mesajın etrafını saran kalabalık.</p>
+      </div>
+      <div class="noise">
+        <article class="noise-card reveal">
+          <div class="noise-demo" aria-hidden="true"><span class="strike">RE: RE: YNT: FW:</span> Bütçe Revizyonu</div>
+          <h3>Uzayan konu satırları</h3>
+          <p>Konunun kendisi, her yanıtta bir tane daha eklenen öneklerin arkasında kalır.</p>
+        </article>
+        <article class="noise-card reveal">
+          <div class="noise-demo" aria-hidden="true"><span class="strike">Merhaba Deniz Bey,</span><br>Uygundur.<br><span class="strike">İyi çalışmalar,</span></div>
+          <h3>Hitap ve kapanış</h3>
+          <p>Nezaket gerekli; ama aynı kişiyle günün onuncu yanıtında da okunmak zorunda değil.</p>
+        </article>
+        <article class="noise-card reveal">
+          <div class="noise-demo small" aria-hidden="true"><span class="strike">Finans Direktörü · Nova Teknoloji A.Ş.<br>Bu e-posta ve ekleri yalnızca gönderildiği kişiye özeldir ve gizli bilgi…</span></div>
+          <h3>İmza ve yasal uyarı</h3>
+          <p>Tek kelimelik onayın altında unvan, adres ve bir paragraf hukuki metin.</p>
+        </article>
+        <article class="noise-card reveal">
+          <div class="noise-demo small" aria-hidden="true"><span class="strike">&gt; Kimden: … Gönderildi: …<br>&gt;&gt; Kimden: … Gönderildi: …<br>&gt;&gt;&gt; Kimden: … Gönderildi: …</span></div>
+          <h3>İç içe alıntılar</h3>
+          <p>Aynı yazışma, her yanıtla birlikte bir kat daha kopyalanarak geri gelir.</p>
+        </article>
+      </div>
+      <p class="punch reveal">PrettyMail altyapıyı değil, <strong>arayüzü</strong> değiştirir. Bunların hiçbiri silinmez; yalnızca yolunuzdan çekilir ve tek tıkla geri gelir.</p>
+    </div>
+  </section>
+
+  <!-- ═════════ Nasıl çalışır ═════════ -->
+  <section class="sec sec-alt" id="nasil">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <p class="eyebrow">Nasıl çalışır</p>
+        <h2>Kişi, konu, yanıt. <span class="serif">Hepsi bu.</span></h2>
+        <p class="sub">Klasörler ve ileti dizileri yerine, zaten bildiğiniz üç şey.</p>
+      </div>
+
+      <ol class="steps">
+        <li class="step reveal">
+          <div class="step-art ui" aria-hidden="true">
+            <div class="mini-list">
+              <div class="row on"><span class="av" style="--c:#0984E3">EY</span><div class="row-main"><div class="row-top"><b>Elif Yıldız</b><time>09:22</time></div><p>Güncel tabloyu çarşamba…</p></div></div>
+              <div class="row"><span class="av" style="--c:#B7791F">MD</span><div class="row-main"><div class="row-top"><b>Murat Demir</b><time>Dün</time></div><p>Taslağı aldık, hukuk birimimiz…</p></div><span class="badge">1</span></div>
+              <div class="row"><span class="av" style="--c:#00A884">CÖ</span><div class="row-main"><div class="row-top"><b>Can Öztürk</b><time>Dün</time></div><p>Süper, teşekkürler 🙏</p></div></div>
+            </div>
+          </div>
+          <span class="step-n" aria-hidden="true">1</span>
+          <h3>Her kişi bir sohbet</h3>
+          <p>Gelen kutusu yerine kişileriniz var. Bir kişiyle bütün yazışmalarınız tek sohbette toplanır. Alıcı sayısı kaç olursa olsun ayrı grup açılmaz; konu, onu başlatan kişinin sohbetinde durur.</p>
+        </li>
+        <li class="step reveal">
+          <div class="step-art ui" aria-hidden="true">
+            <div class="mini-chat">
+              <div class="tsep"><span><svg class="ic"><use href="#i-layers"/></svg>Sözleşme taslağı</span></div>
+              <div class="thr-more"><span class="av" style="--c:#B7791F;--s:20px">MD</span><b>3 yanıt</b><span>son: Taslağı aldık…</span></div>
+              <div class="tsep"><span><svg class="ic"><use href="#i-layers"/></svg>Teslimat takvimi</span></div>
+              <div class="thr-more"><span class="av" style="--c:#B7791F;--s:20px">MD</span><b>5 yanıt</b><span>son: Perşembe uygun.</span></div>
+              <div class="tsep"><span><svg class="ic"><use href="#i-layers"/></svg>Fatura bilgileri</span></div>
+            </div>
+          </div>
+          <span class="step-n" aria-hidden="true">2</span>
+          <h3>Her yazışma bir konu</h3>
+          <p>Sohbetin içinde her e-posta yazışması ayrı bir konudur. Konular başlığa göre değil, sunucunun yazışma kimliğine göre ayrılır; aynı başlıklı iki ayrı yazışma birbirine karışmaz.</p>
+        </li>
+        <li class="step reveal">
+          <div class="step-art ui" aria-hidden="true">
+            <div class="mini-chat">
+              <div class="msg in"><div class="bubble">Perşembe 14:00 teslimat için uygun mu?<span class="meta">11:02</span></div></div>
+              <div class="thr">
+                <div class="msg out"><div class="bubble">Uygun, depoya haber veriyorum.<span class="meta">11:09 <svg class="ic"><use href="#i-check"/></svg></span></div></div>
+                <div class="msg in"><div class="bubble">Teşekkürler.<span class="meta">11:10</span></div></div>
+              </div>
+            </div>
+          </div>
+          <span class="step-n" aria-hidden="true">3</span>
+          <h3>Her yanıt bir balon</h3>
+          <p>Yanıtlar konunun altında sıralanır. Son konu açık gelir; öncekiler “3 yanıt · son: …” satırıyla özetlenir ve tıklayınca açılır.</p>
+        </li>
+      </ol>
+
+      <div class="outbound reveal">
+        <div class="outbound-text">
+          <h3>Siz kısa yazarsınız. <span class="serif">Karşı taraf düzgün bir e-posta alır.</span></h3>
+          <p>“Onaylıyorum, pazartesi gönderelim” yazıp Enter’a basarsınız. PrettyMail isterseniz hitabı ve kapanışı ekler, yanıtı doğru yazışmaya bağlar. Alıcı bunu kendi e-posta programında sıradan bir e-posta olarak görür; PrettyMail kullanması gerekmez.</p>
+          <ul class="ticks">
+            <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg>Göndermeden önce alıcının göreceği e-postayı önizleyin</li>
+            <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg>“Hitap + imza” tek tıkla kapanır</li>
+            <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg>Gönderdikten sonra 5 saniye içinde geri alın</li>
+          </ul>
+        </div>
+        <div class="outbound-art" role="img" aria-label="Solda sohbet kutusuna yazılmış kısa mesaj: Onaylıyorum, pazartesi gönderelim. Sağda alıcının göreceği e-posta: Merhaba Elif Hanım hitabı ve İyi çalışmalar kapanışı otomatik eklenmiş.">
+          <div class="ob-you ui">
+            <span class="ob-tag">Siz yazarsınız</span>
+            <div class="composer">
+              <div class="ctx"><span class="cx">Konu: <b>2027 Bütçe Revizyonu…</b></span><span class="cx on">Hitap + imza</span></div>
+              <div class="cbox"><span class="typed">Onaylıyorum, pazartesi gönderelim.</span><span class="send"><svg class="ic"><use href="#i-send"/></svg></span></div>
+            </div>
+          </div>
+          <div class="ob-arrow"><svg class="ic"><use href="#i-down"/></svg></div>
+          <div class="ob-them">
+            <span class="ob-tag">Alıcı bunu görür</span>
+            <div class="mailcard flat">
+              <dl class="mail-h">
+                <dt>Kimden</dt><dd>Deniz Aksoy</dd>
+                <dt>Kime</dt><dd>Elif Yıldız</dd>
+                <dt>Konu</dt><dd class="s">RE: 2027 Bütçe Revizyonu – Ürün Ekibi</dd>
+              </dl>
+              <div class="mc-body">
+                <div class="cut add" data-l="Otomatik eklenir"><p>Merhaba Elif Hanım,</p></div>
+                <p class="plain">Onaylıyorum, pazartesi gönderelim.</p>
+                <div class="cut add" data-l="Otomatik eklenir"><p>İyi çalışmalar,<br><b>Deniz Aksoy</b></p></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════════ Gizlilik ═════════ -->
+  <section class="sec band" id="gizlilik">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <p class="eyebrow">Gizlilik ve güvenlik</p>
+        <h2>E-postanız, sizinle <span class="serif">kurumunuz arasında</span> kalır.</h2>
+        <p class="sub">PrettyMail bir e-posta hizmeti değil, bir arayüzdür. Posta kutunuz olduğu yerde, kurumunuzun kendi sunucusunda durur. Arada başka kimse yoktur.</p>
+      </div>
+
+      <div class="wire reveal" role="img" aria-label="Şema: Bilgisayarınızdaki PrettyMail, şifreli bağlantıyla doğrudan kurumunuzun Exchange sunucusuna bağlanır. Arada bir PrettyMail sunucusu yoktur.">
+        <div class="wire-node">
+          <span class="wire-ic"><svg class="ic"><use href="#i-monitor"/></svg></span>
+          <b>Bilgisayarınız</b><span>PrettyMail uygulaması</span>
+        </div>
+        <div class="wire-line">
+          <span class="wire-cap"><svg class="ic"><use href="#i-lock"/></svg>HTTPS · doğrudan</span>
+          <i></i>
+          <span class="wire-ghost"><svg class="ic"><use href="#i-x"/></svg>Aracı sunucu yok</span>
+        </div>
+        <div class="wire-node">
+          <span class="wire-ic"><svg class="ic"><use href="#i-server"/></svg></span>
+          <b>Kurumunuzun sunucusu</b><span>Exchange Server</span>
+        </div>
+      </div>
+
+      <div class="facts">
+        <article class="fact reveal">
+          <svg class="ic" aria-hidden="true"><use href="#i-key"/></svg>
+          <h3>Parola kaydedilmez</h3>
+          <p>Parolanız diske yazılmaz ve bize ulaşmaz. Oturum, doğrudan kurumunuzun sunucusuyla açılır.</p>
+        </article>
+        <article class="fact reveal">
+          <svg class="ic" aria-hidden="true"><use href="#i-server"/></svg>
+          <h3>Aracı sunucu yok</h3>
+          <p>E-postalarınız bizim sunucumuzdan geçmez, çünkü arada bir sunucumuz yok. Uygulama doğrudan kurumunuzun Exchange sunucusuyla konuşur.</p>
+        </article>
+        <article class="fact reveal">
+          <svg class="ic" aria-hidden="true"><use href="#i-database"/></svg>
+          <h3>E-postalarınızı saklamayız</h3>
+          <p>PrettyMail e-postalarınızı kendi tarafında tutmaz; kullanıcı verisi içeren bir veritabanımız yoktur. Posta kutunuz, her açılışta yeniden indirilmesin diye yalnızca sizin bilgisayarınızda, parolanızla şifrelenmiş olarak saklanır; oturum açılmadan okunamaz ve hesabı kaldırdığınızda silinir.</p>
+        </article>
+        <article class="fact reveal">
+          <svg class="ic" aria-hidden="true"><use href="#i-eye"/></svg>
+          <h3>Posta kutunuz siz istemeden değişmez</h3>
+          <p>Okuma ve eşitleme posta kutunuzu değiştirmez. Okundu işareti ve bayrak yalnızca siz düğmeye bastığınızda sunucuya yazılır.</p>
+        </article>
+        <article class="fact reveal">
+          <svg class="ic" aria-hidden="true"><use href="#i-badge"/></svg>
+          <h3>Sertifika denetimi kapatılamaz</h3>
+          <p>Bağlantı yalnızca HTTPS üzerinden kurulur ve sunucu sertifikası her zaman doğrulanır. Windows sertifika deposundaki kurum kökleri tanınır.</p>
+        </article>
+        <article class="fact reveal">
+          <svg class="ic" aria-hidden="true"><use href="#i-shield"/></svg>
+          <h3>Hesabınızı kilitlemez</h3>
+          <p>Sunucu parolayı reddederse PrettyMail kendiliğinden yeniden denemez; oturum formunu yeniden açar. Kullanıcı adınız yazdığınız gibi gönderilir.</p>
+        </article>
+      </div>
+
+      <aside class="frank reveal">
+        <svg class="ic" aria-hidden="true"><use href="#i-info"/></svg>
+        <p><strong>Açık konuşalım.</strong> PrettyMail erken aşamada bir üründür. Bağımsız bir güvenlik denetiminden geçmedi ve herhangi bir güvenlik ya da uyumluluk sertifikası taşımıyor. Kurumunuzun BT politikalarına uygunluğunu kendi ekibinizle değerlendirmenizi öneririz.</p>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ═════════ Özellikler ═════════ -->
+  <section class="sec" id="ozellikler">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <p class="eyebrow">Öne çıkanlar</p>
+        <h2>Küçük ayrıntılar, <span class="serif">hafifleyen</span> bir gelen kutusu.</h2>
+        <p class="sub">Aşağıdakiler şirket içi Exchange hesaplarında çalışır. Neyin hangi koşulda denendiğini <a href="#durum">Dürüst durum</a> bölümünde açıkça yazdık.</p>
+      </div>
+
+      <div class="bento">
+        <article class="card c3 reveal">
+          <div class="card-art ui" aria-hidden="true">
+            <div class="msg in"><div class="bubble">Sözleşmenin 4. maddesini güncelledim, ekte.<span class="meta">14:32</span></div></div>
+            <span class="orig-btn"><svg class="ic"><use href="#i-mail"/></svg>Orijinal e-postayı göster</span>
+          </div>
+          <h3>Balonda yalnızca asıl mesaj</h3>
+          <p>Hitap, kapanış, imza, yasal uyarı ve alıntılanan eski yazışma gizlenir. Ayıklama sezgiseldir; bu yüzden hiçbir içerik değiştirilmez ve orijinal e-posta, gizlenen bölümleri işaretli olarak her zaman bir tık uzaktadır.</p>
+        </article>
+
+        <article class="card c3 reveal">
+          <div class="card-art ui" aria-hidden="true">
+            <div class="msg in"><div class="bubble rich">
+              <table><thead><tr><th>Kalem</th><th>2026</th><th>2027</th></tr></thead><tbody><tr><td>Bulut altyapı</td><td>1,2 M</td><td><b>1,6 M</b></td></tr><tr><td>Lisanslar</td><td>0,4 M</td><td>0,5 M</td></tr></tbody></table>
+              <span class="meta">16:20</span></div></div>
+          </div>
+          <h3>Biçimli e-postalar, balonun içinde</h3>
+          <p>Tablo, kalın yazı, bağlantı ve görsel içeren e-postalar özgün biçimiyle görünür. İçerik, betik çalıştıramayan yalıtılmış bir çerçevede açılır; uzak görseller siz isteyene kadar yüklenmez.</p>
+        </article>
+
+        <article class="card c2 reveal">
+          <div class="card-art ui" aria-hidden="true">
+            <ul class="people">
+              <li><span class="av" style="--c:#0984E3;--s:26px">EY</span>Elif Yıldız<span class="tag acc">Gönderen</span></li>
+              <li><span class="av" style="--c:#6B5CE7;--s:26px">DA</span>Siz<span class="tag">Kime</span></li>
+              <li><span class="av" style="--c:#D6336C;--s:26px">ZK</span>Zeynep Kara<span class="tag">Bilgi</span></li>
+            </ul>
+          </div>
+          <h3>Bu konuda kimler var?</h3>
+          <p>Her konu için Gönderen, Kime, Bilgi ve Gizli alıcılar rozetleriyle listelenir; altında yanıtınızın kime gideceği yazar.</p>
+        </article>
+
+        <article class="card c2 reveal">
+          <div class="card-art ui" aria-hidden="true">
+            <div class="toast"><svg class="ic"><use href="#i-clock"/></svg>Gönderiliyor…<span><svg class="ic"><use href="#i-undo"/></svg>Geri al</span></div>
+          </div>
+          <h3>5 saniye geri alma</h3>
+          <p>Enter’a bastıktan sonra fikrinizi değiştirirseniz, e-posta sunucuya gitmeden vazgeçebilirsiniz.</p>
+        </article>
+
+        <article class="card c2 reveal">
+          <div class="card-art ui" aria-hidden="true">
+            <div class="fix"><span>BaÅŸkanlÄ±ÄŸÄ±</span><svg class="ic"><use href="#i-right"/></svg><b>Başkanlığı</b></div>
+          </div>
+          <h3>Bozuk Türkçe karakterleri onarır</h3>
+          <p>Karakter kümesini yanlış etiketleyen sistemlerden gelen e-postalar konu, gövde ve gönderen adında düzeltilerek gösterilir.</p>
+        </article>
+
+        <article class="card c2 plain reveal">
+          <svg class="ic" aria-hidden="true"><use href="#i-type"/></svg>
+          <h3>Biçimli yazım ve ekler</h3>
+          <p>Kalın, italik, liste, bağlantı, yazı tipi ve renk; dosya ekleri (toplam 20 MB); birden çok alıcı ve Bilgi (CC).</p>
+        </article>
+        <article class="card c2 plain reveal">
+          <svg class="ic" aria-hidden="true"><use href="#i-flag"/></svg>
+          <h3>Okundu ve bayrak, Outlook’la ortak</h3>
+          <p>Outlook’ta koyduğunuz bayraklar burada da görünür, “Bayraklı” süzgeciyle listelenir. “Okundu yap” geri alınabilir.</p>
+        </article>
+        <article class="card c2 plain reveal">
+          <svg class="ic" aria-hidden="true"><use href="#i-layers"/></svg>
+          <h3>Konular görünümü</h3>
+          <p>Bütün kişilerdeki konular, son harekete göre tek listede. Başkasının sohbetinde duran konuya gelen yanıt burada görünür.</p>
+        </article>
+        <article class="card c2 plain reveal">
+          <svg class="ic" aria-hidden="true"><use href="#i-megaphone"/></svg>
+          <h3>Bildirimler ayrı durur</h3>
+          <p>Bültenler ve otomatik bildirimler kişilerinizin arasına karışmaz; listenin başında tek satırda, salt okunur kanallarda toplanır.</p>
+        </article>
+        <article class="card c2 plain reveal">
+          <svg class="ic" aria-hidden="true"><use href="#i-calendar"/></svg>
+          <h3>Takvim, şimdilik salt okunur</h3>
+          <p>Takvim etkinlikleriniz ve davet kartları görüntülenir. Davet yanıtlama ve toplantı oluşturma henüz yok.</p>
+        </article>
+        <article class="card c2 plain reveal">
+          <svg class="ic" aria-hidden="true"><use href="#i-moon"/></svg>
+          <h3>Açık ve koyu tema</h3>
+          <p>Gün içinde aydınlık, akşam mesaisinde göz yormayan koyu görünüm.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════════ Dürüst durum ═════════ -->
+  <section class="sec sec-alt" id="durum">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <p class="eyebrow">Dürüst durum</p>
+        <h2>Olanı da, <span class="serif">olmayanı da</span> söylüyoruz.</h2>
+        <p class="sub">PrettyMail henüz erken bir sürüm. Karar vermeden önce neyin çalıştığını ve neyin eksik olduğunu bilmenizi isteriz.</p>
+      </div>
+      <div class="state">
+        <div class="state-col ok reveal">
+          <h3><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg>Bugün çalışıyor <small>şirket içi Exchange</small></h3>
+          <ul>
+            <li>Oturum açma ve e-postaları okuma</li>
+            <li>Sunucunun, parola gönderilmeden kendiliğinden bulunması</li>
+            <li>Kişi → konu → yanıt dönüşümü; hitap, imza ve alıntı ayıklama</li>
+            <li>Yanıt ve yeni e-posta gönderme, 5 saniye geri alma</li>
+            <li>Biçimli yazım, dosya eki, birden çok alıcı ve Bilgi</li>
+            <li>Ek indirme</li>
+            <li>Okundu işaretleme ve bayrak</li>
+            <li>Takvim etkinliklerini görme (salt okunur)</li>
+          </ul>
+          <p class="state-note">İlk iki madde gerçek bir Exchange Server 2019 üzerinde, gerçek hesapla denendi. Diğerleri şimdilik taklit bir Exchange sunucusuna karşı sınandı; gerçek sunucuda doğrulanmaları sürüyor.</p>
+        </div>
+        <div class="state-col no reveal">
+          <h3><svg class="ic" aria-hidden="true"><use href="#i-clock"/></svg>Henüz yok</h3>
+          <ul>
+            <li>İndirilebilir kurulum dosyası (hazırlanıyor)</li>
+            <li>Gmail ve Microsoft 365: bağlayıcılar yazıldı, gerçek hesapla henüz denenmedi</li>
+            <li>Alt klasörler: yalnızca Gelen Kutusu ve Gönderilmiş Öğeler okunur</li>
+            <li>Anlık bildirim: yeni e-postalar 60 saniyede bir yoklanır</li>
+            <li>Davet yanıtlama, toplantı oluşturma, zamanlanmış gönderim, emoji tepkileri</li>
+            <li>Arşivleme, etiket ve klasör işlemleri</li>
+            <li>Çok faktörlü doğrulama, akıllı kart ya da yalnızca Kerberos kullanan kurumlar</li>
+            <li>Mobil uygulama</li>
+          </ul>
+          <p class="state-note">“Yazıyor…” göstergesi ve gerçek “okundu” bilgisi de yok: e-postada bunların güvenilir bir karşılığı bulunmuyor, olmayan bir şeyi göstermek istemiyoruz.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════════ Uyumluluk ═════════ -->
+  <section class="sec" id="uyumluluk">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <p class="eyebrow">Desteklenen sistemler</p>
+        <h2>Önce şirket içi Exchange. <span class="serif">Sırada bulut.</span></h2>
+        <p class="sub">Şirket içi Exchange için sunucu tarafında kurulum ya da uygulama kaydı gerekmez; Outlook’ta oturum açtığınız bilgilerle bağlanırsınız.</p>
+      </div>
+      <div class="systems">
+        <article class="sys live reveal">
+          <div class="sys-top"><span class="glyph" style="--c:#2F6FED" aria-hidden="true">E</span><span class="st st-ok">Çalışıyor</span></div>
+          <h3>Şirket içi Exchange Server</h3>
+          <p>Exchange Web Services (EWS) üzerinden, NTLM ya da Basic kimlik doğrulamayla. Gerçek bir Exchange Server 2019’da denendi.</p>
+          <ul>
+            <li>EWS’nin dışarıdan ya da VPN ile erişilebilir olması gerekir</li>
+            <li>Okundu ve bayrak işlemleri Exchange 2013 ve sonrasını gerektirir</li>
+          </ul>
+        </article>
+        <article class="sys reveal">
+          <div class="sys-top"><span class="glyph" style="--c:#12A3B4" aria-hidden="true">O</span><span class="st st-soon">Deneme aşamasında · yakında</span></div>
+          <h3>Microsoft 365 · Outlook.com</h3>
+          <p>Bağlayıcı yazıldı ve taklit yanıtlarla sınandı; gerçek bir hesapla henüz denenmedi. Hazır olduğunda burada duyurulacak.</p>
+        </article>
+        <article class="sys reveal">
+          <div class="sys-top"><span class="glyph" style="--c:#E2574C" aria-hidden="true">G</span><span class="st st-soon">Deneme aşamasında · yakında</span></div>
+          <h3>Gmail · Google Workspace</h3>
+          <p>Bağlayıcı yazıldı ve taklit yanıtlarla sınandı; gerçek bir hesapla henüz denenmedi. Hazır olduğunda burada duyurulacak.</p>
+        </article>
+        <article class="sys reveal">
+          <div class="sys-top"><span class="glyph" style="--c:#0E8A6B" aria-hidden="true">@</span><span class="st st-soon">Deneme aşamasında · yakında</span></div>
+          <h3>IMAP / SMTP</h3>
+          <p>Gmail (uygulama parolasıyla), Yandex, iCloud, Zimbra ve IMAP sunan kurumsal sunucular için bağlayıcı yazıldı ve taklit bir sunucuya karşı sınandı; gerçek bir hesapla henüz denenmedi. Uygulama kaydı gerektirmez.</p>
+        </article>
+      </div>
+      <p class="platform reveal"><svg class="ic" aria-hidden="true"><use href="#i-monitor"/></svg><span><strong>Platform:</strong> Windows masaüstü uygulaması hazırlanıyor. Şimdilik yalnızca Windows hedefleniyor.</span></p>
+    </div>
+  </section>
+
+  <!-- ═════════ SSS ═════════ -->
+  <section class="sec sec-alt" id="sss">
+    <div class="wrap faq-wrap">
+      <div class="sec-head left reveal">
+        <p class="eyebrow">Sık sorulan sorular</p>
+        <h2>Akla ilk <span class="serif">gelenler.</span></h2>
+        <p class="sub">Burada yanıtını bulamadığınız bir soru olursa, iletişim adresimiz eklendiğinde bize yazabilirsiniz.</p>
+      </div>
+      <div class="faq reveal">
+        <details open>
+          <summary>Karşı tarafın da PrettyMail kullanması gerekiyor mu?<svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg></summary>
+          <p>Hayır. Siz sohbet eder gibi yazarsınız; karşı taraf kendi e-posta programında sıradan, düzgün biçimli bir e-posta görür. PrettyMail’i kullandığınızı fark etmesi bile gerekmez.</p>
+        </details>
+        <details>
+          <summary>E-postalarım değiştiriliyor ya da siliniyor mu?<svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg></summary>
+          <p>Hayır. Hitap, imza ve alıntılar yalnızca sohbet görünümünde gizlenir; e-postanın kendisine dokunulmaz. “Orijinal e-posta” ile tamamını, gizlenen bölümleri işaretli olarak görebilirsiniz. Okuma ve eşitleme posta kutunuzu değiştirmez.</p>
+        </details>
+        <details>
+          <summary>Parolam nerede duruyor?<svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg></summary>
+          <p>Hiçbir yerde kayıtlı durmuyor. Parolanız kaydedilmez ve bize ulaşmaz; yalnızca kurumunuzun sunucusunda oturum açmak için kullanılır. Sunucu parolayı reddederse, hesabınız kilitlenmesin diye yeniden deneme yapılmaz.</p>
+        </details>
+        <details>
+          <summary>Bağlanırken dışarıya hangi bilgi gidiyor?<svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg></summary>
+          <p>E-postalarınız ve parolanız yalnızca kurumunuzun sunucusuna gider. Hesap eklerken sunucunuzu bulabilmek için e-posta adresinizin alan adı (@ işaretinden sonraki bölüm) genel bir DNS hizmetinde (Google Public DNS) sorgulanır; bu sorguda adresinizin geri kalanı, parolanız ya da e-posta içeriği yer almaz.</p>
+        </details>
+        <details>
+          <summary>BT ekibimizin bir şey kurması gerekiyor mu?<svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg></summary>
+          <p>Sunucu tarafında kurulum ya da uygulama kaydı gerekmez. Exchange sunucunuzun EWS erişimi açık olmalı; sunucu yalnızca kurum ağından erişilebiliyorsa VPN’inizin açık olması yeterlidir. Kurumunuz çok faktörlü doğrulama, akıllı kart ya da yalnızca Kerberos kullanıyorsa şimdilik bağlanılamaz.</p>
+        </details>
+        <details>
+          <summary>Outlook’u bırakmam mı gerekiyor?<svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg></summary>
+          <p>Hayır. PrettyMail aynı posta kutusunun başka bir görünümüdür; ikisini yan yana kullanabilirsiniz. Outlook’ta koyduğunuz bayraklar PrettyMail’de de görünür.</p>
+        </details>
+        <details>
+          <summary>İmza ya da alıntı yanlış ayıklanırsa ne olur?<svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg></summary>
+          <p>Olabilir; ayıklama sezgisel çalışır ve yanlış yerden kesme riski vardır. Bu yüzden hiçbir içerik silinmez ya da değiştirilmez; orijinal e-posta her balondan bir tık uzaktadır.</p>
+        </details>
+        <details>
+          <summary>E-postalarım bir yapay zekâya gönderiliyor mu?<svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg></summary>
+          <p>Hayır. Bugünkü sürümde e-posta içeriği hiçbir yapay zekâ modeline gönderilmiyor. İleride özet gibi özellikler eklenirse isteğe bağlı olacak ve açık onayınız olmadan çalışmayacak şekilde tasarlanması planlanıyor.</p>
+        </details>
+        <details>
+          <summary>Gmail ve Microsoft 365 ne zaman gelecek?<svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg></summary>
+          <p>Bağlayıcılar yazıldı, ancak gerçek hesaplarla henüz denenmedi. Denemeden “çalışıyor” demek istemediğimiz için şimdilik bir tarih vermiyoruz.</p>
+        </details>
+        <details>
+          <summary>Ücretli mi olacak?<svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg></summary>
+          <p>Fiyat ve lisans henüz kesinleşmedi. Bireysel kullanım için ücretsiz olması planlanıyor; kurumsal seçenekler ayrıca duyurulacak.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════════ İndir / erken erişim ═════════ -->
+  <section class="sec" id="indir">
+    <div class="wrap">
+      <div class="cta reveal">
+        <div class="cta-dots" aria-hidden="true"></div>
+        <span class="logo big" aria-hidden="true"><svg class="ic"><use href="#i-logo"/></svg></span>
+        <h2 data-yakinda>İndirme <span class="serif">yakında.</span></h2>
+        <h2 data-hazir hidden>PrettyMail’i <span class="serif">deneyin.</span></h2>
+        <p class="cta-lead" data-yakinda>Windows masaüstü uygulaması hazırlanıyor. Henüz indirilebilir bir dosya ya da bekleme listesi yok; hazır olduğunda bu sayfada duyurulacak.</p>
+        <p class="cta-lead" data-hazir hidden>Windows masaüstü uygulaması hazır. Kurulum dosyasını indirip Outlook’ta kullandığınız bilgilerle oturum açabilirsiniz.</p>
+        <a class="btn btn-xl btn-white" data-indir aria-disabled="true"><svg class="ic" aria-hidden="true"><use href="#i-download"/></svg>Windows için indir <span class="pill-soon" data-yakinda>Yakında</span></a>
+        <p class="cta-ver" data-surum hidden></p>
+
+        <!-- ▼ FİYAT VE LİSANS: kesinleştiğinde yalnızca bu paragrafı (ve SSS’deki “Ücretli mi olacak?” yanıtını) güncelleyin. -->
+        <p class="cta-terms" id="lisans-notu"><strong>Fiyat ve lisans henüz kesinleşmedi.</strong> Bireysel kullanım için ücretsiz olması planlanıyor; kurumsal seçenekler ayrıca duyurulacak. Kaynak kodunun açık olarak yayımlanması değerlendiriliyor.</p>
+        <!-- ▲ FİYAT VE LİSANS -->
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="wrap foot-in">
+    <div class="foot-brand">
+      <a class="brand" href="#ust" aria-label="PrettyMail — sayfanın başı">
+        <span class="logo" aria-hidden="true"><svg class="ic"><use href="#i-logo"/></svg></span>
+        <span class="brand-name">PrettyMail</span>
+      </a>
+      <p>Aynı e-posta, sohbet rahatlığında.</p>
+    </div>
+    <nav class="foot-nav" aria-label="Alt bağlantılar">
+      <a href="#nasil">Nasıl çalışır</a>
+      <a href="#gizlilik">Gizlilik</a>
+      <a href="#ozellikler">Özellikler</a>
+      <a href="#durum">Dürüst durum</a>
+      <a href="#uyumluluk">Uyumluluk</a>
+      <a href="#sss">Sorular</a>
+      <a href="#indir">İndir</a>
+    </nav>
+    <!-- YER TUTUCULAR: site.js içindeki AYARLAR doldurulunca bu iki satır kendiliğinden bağlantıya dönüşür. -->
+    <ul class="foot-contact">
+      <li><span>İletişim</span><span data-iletisim>Adres yakında eklenecek</span></li>
+      <li><span>Kaynak kodu</span><span data-github>Yakında</span></li>
+    </ul>
+  </div>
+  <div class="wrap"><div class="foot-legal">
+    <p>© 2026 PrettyMail</p>
+    <p>Microsoft, Exchange, Outlook, Windows, Google ve Gmail ilgili sahiplerinin ticari markalarıdır. PrettyMail bu şirketlerle bağlantılı değildir ve onlar tarafından desteklenmemektedir.</p>
+  </div></div>
+</footer>
+
+<script src="site.js"></script>
+</body>
+</html>
